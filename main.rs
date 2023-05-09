@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::Read;
+use std::path::PathBuf;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
@@ -44,7 +45,6 @@ fn get_message(request: String) -> Option<String> {
     let body = parts[1].trim();
     let mut message = String::new();
 
-    // Check if the request is for index.drk
     let mut path = "/";
     for line in request.lines() {
         if line.starts_with("GET") {
@@ -56,37 +56,35 @@ fn get_message(request: String) -> Option<String> {
         }
     }
 
-    // Serve the index.drk file with DRK code
+    let mut file_path = PathBuf::from(".");
     if path == "/" || path.ends_with("/index.drk") {
-        let drk_file_path = format!(".{}", path);
-        let content_type = if path.ends_with(".drk") {
-            "text/html" // treat DRK files as HTML files
-        } else {
-            "text/html"
-        };
-        let drk_file = fs::read_to_string(drk_file_path).unwrap_or_else(|_| {
-            String::from(
-                r#"<!DOCTYPE html>
-<html>
-  <head>
-    <title>DRK Page Not Found</title>
-  </head>
-  <body>
-    <h1>DRK Page Not Found</h1>
-  </body>
-</html>"#,
-            )
-        });
-        message += "HTTP/1.1 200 OK\r\n";
-        message += &format!("Content-Type: {}\r\n", content_type);
-        message += "\r\n";
-        message += &drk_file;
+        file_path.push("index.drk");
+    } else if path.ends_with(".drk") {
+        file_path.push(&path[1..]);
     } else {
         message += "HTTP/1.1 404 Not Found\r\n";
         message += "Content-Type: text/html\r\n";
         message += "\r\n";
         message += "404 Not Found";
+        return Some(message);
     }
+
+    let drk_file_path = file_path.as_path();
+    let content_type = if path.ends_with(".drk") {
+        "text/html" // treat DRK files as HTML files
+    } else {
+        "text/html"
+    };
+    let drk_file = fs::read_to_string(drk_file_path).unwrap_or_else(|_| {
+        String::from(
+            r#"404-Z DRK FILE NOT FOUND"#,
+        )
+    });
+
+    message += "HTTP/1.1 200 OK\r\n";
+    message += &format!("Content-Type: {}\r\n", content_type);
+    message += "\r\n";
+    message += &drk_file;
 
     Some(message)
 }
