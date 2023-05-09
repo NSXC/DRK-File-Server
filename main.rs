@@ -86,5 +86,5 @@ fn get_message(request: String) -> Option<String> {
     message += "\r\n";
     message += &drk_file;
 
-    Some(message)
+    Some(message)//some == anytype
 }
