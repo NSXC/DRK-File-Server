@@ -1,0 +1,16 @@
+{
+    "blocked": [
+      "/drk.routes.json",
+      "/drk.config.json",
+      "/drk.exe"
+    ],
+    "routes":{
+        "/": "src/index.html",
+        "/about": "src/about.html",
+        "/partners": "src/partners.html",
+        "/contact": "src/contact.html",
+        "/robots": "src/robots.txt"
+    },
+    "port": 8080,
+  }
+  
