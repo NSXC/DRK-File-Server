@@ -1,14 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fmt::format;
 use std::fs;
-use std::io::{self, Write};
-use std::fs::DirEntry;
-use std::net::{TcpListener, TcpStream};
+use std::io::{Write};
+use std::net::{TcpListener};
 use std::path::PathBuf;
-use std::thread;
 use std::fs::File;
-use std::io::prelude::*;
 use serde_json::Value;
 use std::io::Read;
 
@@ -50,7 +46,7 @@ fn get_message(request: String) -> Option<String> {
     if parts.len() < 2 {
         return None;
     }
-    let body = parts[1].trim();
+    //let body = parts[1].trim();
     let mut message = String::new();
 
     let mut path = "/";
