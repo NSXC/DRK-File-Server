@@ -24,7 +24,6 @@ fn main() {
 
     for stream in listener.incoming() {
         let mut stream = stream.unwrap();
-        println!("Connection established!");
         let mut buffer: [u8; 1024] = [0; 1024];//max amount of bytes to read
         stream.read(&mut buffer).unwrap();
         let request = String::from_utf8_lossy(&buffer[..]);
@@ -60,7 +59,6 @@ fn get_message(request: String) -> Option<String> {
             let request_parts: Vec<&str> = line.split_whitespace().collect();
             if request_parts.len() >= 2 {
                 path = request_parts[1];
-                println!("requested path: {}", path);
                 let mut configfile = File::open("drk.config.json").expect("Unable to open file");
                 let mut configcontents = String::new();
                 configfile.read_to_string(&mut configcontents).expect("Unable to read file");
